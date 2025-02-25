@@ -17,6 +17,7 @@ class Document extends Model implements Auditable
         'tipo_documento',
         'fecha_subida',
         'folder_id',
+        'archivo',
     ];
 
     //Relacion uno a muchos inversa
@@ -41,6 +42,7 @@ class Document extends Model implements Auditable
                     "tipo_documento" => $document->tipo_documento,
                     "fecha_subida" => $document->fecha_subida,
                     "folder_id" => $document->folder_id,
+                    "archivo" => $document->archivo,
                     "tramite" => $document->folder ? $document->folder->tramite : 'Tramite no asignado',
                     "reviews" => $document->reviews->map(function ($review) {
                         return [

@@ -70,7 +70,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/documents', [DocumentController::class, 'store'])->middleware('can:create.document')->name('documents.store');
     Route::put('/documents/{document}', [DocumentController::class, 'update'])->middleware('can:edit.document')->name('documents.update');
     Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->middleware('can:delete.document')->name('documents.destroy');
-
+// En routes/web.php
+Route::post('/documents/upload-file', [DocumentController::class, 'uploadFile'])->name('documents.uploadFile');
+Route::get('/documents/{id}/view-file', [DocumentController::class, 'viewFile'])->name('documents.view-file');
     //Rutas para Revisiones
     Route::get('/reviews', [ReviewController::class, 'index'])->middleware('can:view.reviews')->name('reviews.index');
     Route::get('/reviews/{document}', [ReviewController::class, 'show'])->middleware('can:view.reviews')->name('reviews.show');

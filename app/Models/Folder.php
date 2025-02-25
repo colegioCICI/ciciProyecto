@@ -80,6 +80,7 @@ class Folder extends Model implements Auditable
                             "document_id" => $document->document_id,
                             "tipo_documento" => $document->tipo_documento,
                             "fecha_subida" => $document->fecha_subida,
+                            "archivo" => $document->archivo,
                         ];
                     }),
 

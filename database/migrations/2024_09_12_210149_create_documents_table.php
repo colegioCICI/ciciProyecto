@@ -16,6 +16,7 @@ return new class extends Migration
             //Clave foranea
             $table->unsignedBigInteger('folder_id')->nullable();
             $table->string('tipo_documento');
+            $table->string('archivo')->nullable(); // Para almacenar la ruta del archivo
             $table->date('fecha_subida');
             //Asingnacion a clave foranea
             $table->foreign('folder_id')->references('folder_id')->on('folders')->onDelete('cascade');

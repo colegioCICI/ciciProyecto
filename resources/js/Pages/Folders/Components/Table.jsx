@@ -129,6 +129,7 @@ export default function Table() {
     };
 
     const closeModal = () => {
+
         setSelectedTipoEstado("");
         setShowCreate(false);
     };
@@ -175,6 +176,7 @@ export default function Table() {
     const closeViewModal = () => {
         setSelectedTipoEstado("");
         setShowView(false);
+        
     };
     const openEditModal = (folder) => {
         setFolderIdToEdit(folder.folder_id);
@@ -261,6 +263,8 @@ export default function Table() {
                 toast.success("Carpeta creada");
                 closeModal();
                 Inertia.visit(route("folders.index"));
+                window.location.reload(); 
+
             })
             .catch((error) => {
                 // Verificar si el error de validación proviene del servidor
@@ -311,6 +315,8 @@ export default function Table() {
                 toast.success("Actualización completada");
                 closeEditModal();
                 Inertia.visit(route("folders.index"));
+                window.location.reload(); 
+
             })
             .catch((error) => {
                 // Verificar si el error de validación proviene del servidor

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { usePage, Link } from "@inertiajs/react"; // Importa el hook de Inertia
+import React, { useState, useEffect, useRef } from "react";
+import { usePage, Link, router } from "@inertiajs/react"; // Cambiado a router en lugar de useForm
 import SearchInput from "@/Components/SearchInput";
 import ExportData from "@/Components/ExportData";
 import ReviewIcon from "@/Icons/review";
-
+import { FaUpload } from "react-icons/fa6";
+import { FaEye } from "react-icons/fa";
 export default function Table() {
     const { documents, folders, usuariosRoles, logoCICI, success } =
         usePage().props;
@@ -11,7 +12,13 @@ export default function Table() {
         tipo_documento: "",
         fecha_subida: "",
         document_id: "",
+        archivo: "",
     });
+    // Referencias para los inputs de archivo
+    const fileInputRefs = useRef({});
+
+    // Estado para mostrar el archivo que se está cargando
+    const [uploadingState, setUploadingState] = useState({});
 
     const theadersexsportar = [
         "Tramite",
@@ -48,12 +55,9 @@ export default function Table() {
         }
     }, [documents]);
 
+
     // useEffect para detectar cuando los documentos han sido actualizados
-    useEffect(() => {
-        if (documentSearch.length > 0) {
-            // Puedes realizar acciones adicionales aquí si es necesario
-        }
-    }, [documentSearch]);
+    useEffect(() => {}, [documentSearch]);
 
     const [filteredFolders, setFilteredFolders] = useState(folders);
 
@@ -90,6 +94,7 @@ export default function Table() {
             nombre_propietario: folder.nombre_propietario,
             nombre_usuario: folder.nombre_usuario,
             tramite: folder.tramite,
+            archivo: document.archivo,
         })),
     );
 
@@ -152,6 +157,70 @@ export default function Table() {
 
     const selectedDocuments = Object.values(selectedRows);
 
+    // Función para manejar la selección y carga inmediata de archivos
+    const handleFileChange = (document_id, e) => {
+        const file = e.target.files[0];
+
+        if (file) {
+            // Actualizar el estado de carga para mostrar un indicador
+            setUploadingState((prev) => ({
+                ...prev,
+                [document_id]: {
+                    uploading: true,
+                    fileName: file.name,
+                },
+            }));
+
+            // Crear un objeto FormData para enviar el archivo
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("document_id", document_id);
+
+            // Enviar el archivo directamente usando router de Inertia
+            router.post(route("documents.uploadFile"), formData, {
+                onSuccess: () => {
+                    // Actualizar estado cuando la carga es exitosa
+                    setUploadingState((prev) => ({
+                        ...prev,
+                        [document_id]: {
+                            uploading: false,
+                            fileName: file.name,
+                            success: true,
+                        },
+                    }));
+
+                    // Limpiar el mensaje de éxito después de 3 segundos
+                    setTimeout(() => {
+                        setUploadingState((prev) => {
+                            const newState = { ...prev };
+                            if (newState[document_id]) {
+                                newState[document_id].success = false;
+                            }
+                            return newState;
+                        });
+                    }, 3000);
+                    window.location.reload(); 
+                },
+                onError: (errors) => {
+                    // Actualizar estado cuando hay un error
+                    setUploadingState((prev) => ({
+                        ...prev,
+                        [document_id]: {
+                            uploading: false,
+                            fileName: file.name,
+                            error: errors.file || "Error al subir el archivo",
+                        },
+                    }));
+                },
+                preserveScroll: true,
+            });
+        }
+    };
+
+    const getFileUrl = (documentId) => {
+        return route("documents.view-file", documentId);
+    };
+
     return (
         <div className="w-full min-h-screen bg-gray-50">
             <div className="max-w-screen-xl mx-auto pt-20 px-4 md:px-8">
@@ -197,126 +266,257 @@ export default function Table() {
 
                 <div className="mt-8 overflow-hidden rounded-lg border border-gray-200 bg-white shadow">
                     <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
-                                <tr>
-                                    {hasPermission("manage.export") && (
-                                        <th scope="col" className="px-6 py-3">
-                                            <input
-                                                type="checkbox"
-                                                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4"
-                                                onChange={
-                                                    handleHeaderCheckboxChange
-                                                }
-                                                checked={areAllSelected}
-                                            />
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50">
+                                    <tr>
+                                        {hasPermission("manage.export") && (
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3"
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4"
+                                                    onChange={
+                                                        handleHeaderCheckboxChange
+                                                    }
+                                                    checked={areAllSelected}
+                                                />
+                                            </th>
+                                        )}
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Trámite
                                         </th>
-                                    )}
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Trámite
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
-                                        Propietario
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
-                                        Tipo de Documento
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
-                                        Ingreso
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">
-                                        Responsable
-                                    </th>
-                                    <th className="relative px-6 py-3">
-                                        <span className="sr-only">
-                                            Acciones
-                                        </span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                                {currentItems.length > 0 ? (
-                                    currentItems.map((document, index) => (
-                                        <tr
-                                            key={`${document.document_id}-${index}`}
-                                            className="hover:bg-gray-50"
-                                        >
-                                            {hasPermission("manage.export") && (
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <input
-                                                        type="checkbox"
-                                                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4"
-                                                        checked={
-                                                            !!selectedRows[
-                                                                document
-                                                                    .document_id
-                                                            ]
-                                                        }
-                                                        onChange={() =>
-                                                            handleCheckboxChange(
-                                                                document,
-                                                            )
-                                                        }
-                                                    />
-                                                </td>
-                                            )}
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="text-sm text-gray-900 truncate max-w-[150px]">
-                                                    {document.tramite || "N/A"}
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
-                                                <div className="text-sm text-gray-900 truncate max-w-[150px]">
-                                                    {document.nombre_propietario ||
-                                                        "N/A"}
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap hidden md:table-cell">
-                                                <div className="text-sm text-gray-900 truncate max-w-[150px]">
-                                                    {document.tipo_documento ||
-                                                        "N/A"}
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
-                                            <div className="text-sm text-gray-900 truncate max-w-[150px]">
-                                            {document.fecha_subida}
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap hidden xl:table-cell">
-                                                <div className="text-sm text-gray-900 truncate max-w-[150px]">
-                                                    {document.nombre_usuario ||
-                                                        "N/A"}
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
+                                            Propietario
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                                            Tipo de Documento
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+                                            Ingreso
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">
+                                            Responsable
+                                        </th>
+                                        {/* Nueva columna para archivos */}
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Archivo
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Ver Archivo
+                                        </th>
+                                        <th className="relative px-6 py-3">
+                                            <span className="sr-only">
+                                                Acciones
+                                            </span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {currentItems.length > 0 ? (
+                                        currentItems.map((document, index) => (
+                                            <tr
+                                                key={`${document.document_id}-${index}`}
+                                                className="hover:bg-gray-50"
+                                            >
                                                 {hasPermission(
-                                                    "view.reviews",
+                                                    "manage.export",
                                                 ) && (
-                                                    <Link
-                                                        href={route(
-                                                            "reviews.show",
-                                                            document.document_id,
-                                                        )}
-                                                        className="flex items-center justify-center p-2 text-xl font-medium text-green-600 hover:text-green-900 hover:bg-green-50 rounded-full"
-                                                    >
-                                                        <ReviewIcon />
-                                                    </Link>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <input
+                                                            type="checkbox"
+                                                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4"
+                                                            checked={
+                                                                !!selectedRows[
+                                                                    document
+                                                                        .document_id
+                                                                ]
+                                                            }
+                                                            onChange={() =>
+                                                                handleCheckboxChange(
+                                                                    document,
+                                                                )
+                                                            }
+                                                        />
+                                                    </td>
                                                 )}
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="text-sm text-gray-900 truncate max-w-[150px]">
+                                                        {document.tramite ||
+                                                            "N/A"}
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
+                                                    <div className="text-sm text-gray-900 truncate max-w-[150px]">
+                                                        {document.nombre_propietario ||
+                                                            "N/A"}
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap hidden md:table-cell">
+                                                    <div className="text-sm text-gray-900 truncate max-w-[150px]">
+                                                        {document.tipo_documento ||
+                                                            "N/A"}
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
+                                                    <div className="text-sm text-gray-900 truncate max-w-[150px]">
+                                                        {document.fecha_subida}
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap hidden xl:table-cell">
+                                                    <div className="text-sm text-gray-900 truncate max-w-[150px]">
+                                                        {document.nombre_usuario ||
+                                                            "N/A"}
+                                                    </div>
+                                                </td>
+
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="flex flex-col space-y-2">
+                                                        {/* Input para subir archivo */}
+                                                        <div className="flex items-center space-x-2">
+                                                            <input
+                                                                id={`file-${document.document_id}`}
+                                                                ref={(el) =>
+                                                                    (fileInputRefs.current[
+                                                                        document.document_id
+                                                                    ] = el)
+                                                                }
+                                                                type="file"
+                                                                className="hidden"
+                                                                onChange={(e) =>
+                                                                    handleFileChange(
+                                                                        document.document_id,
+                                                                        e,
+                                                                    )
+                                                                }
+                                                            />
+                                                            <label
+                                                                htmlFor={`file-${document.document_id}`}
+                                                                className={`cursor-pointer text-xs px-3 py-1.5 rounded font-medium ${
+                                                                    document.archivo
+                                                                        ? "bg-blue-50 hover:bg-blue-100 text-blue-700"
+                                                                        : "bg-green-50 hover:bg-green-100 text-green-700"
+                                                                }`}
+                                                            >
+                                                                {<FaUpload />}
+                                                            </label>
+                                                        </div>
+
+                                                        {/* Mostrar estado de la carga */}
+                                                        {uploadingState[
+                                                            document.document_id
+                                                        ] && (
+                                                            <div className="text-xs">
+                                                                {uploadingState[
+                                                                    document
+                                                                        .document_id
+                                                                ].uploading ? (
+                                                                    <div className="flex items-center text-amber-600">
+                                                                        <svg
+                                                                            className="animate-spin -ml-1 mr-2 h-4 w-4 text-amber-600"
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            fill="none"
+                                                                            viewBox="0 0 24 24"
+                                                                        >
+                                                                            <circle
+                                                                                className="opacity-25"
+                                                                                cx="12"
+                                                                                cy="12"
+                                                                                r="10"
+                                                                                stroke="currentColor"
+                                                                                strokeWidth="4"
+                                                                            ></circle>
+                                                                            <path
+                                                                                className="opacity-75"
+                                                                                fill="currentColor"
+                                                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                                                            ></path>
+                                                                        </svg>
+                                                                        Subiendo...
+                                                                    </div>
+                                                                ) : uploadingState[
+                                                                      document
+                                                                          .document_id
+                                                                  ].error ? (
+                                                                    <div className="text-red-600">
+                                                                        Error
+                                                                    </div>
+                                                                ) : uploadingState[
+                                                                      document
+                                                                          .document_id
+                                                                  ].success ? (
+                                                                    <div className="text-green-600">
+                                                                        ¡Correcto!
+                                                                    </div>
+                                                                ) : null}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    {document.archivo ? (
+                                                        <div className="flex items-center space-x-2">
+                                                            <button
+                                                                onClick={() =>
+                                                                    (window.location.href =
+                                                                        getFileUrl(
+                                                                            document.document_id,
+                                                                        ))
+                                                                }
+                                                                className="text-blue-600 hover:text-blue-800"
+                                                                title="Descargar archivo"
+                                                            >
+                                                                <FaEye className="w-5 h-5" />
+                                                            </button>
+                                                            <span
+                                                                className="text-sm truncate max-w-[60px]"
+                                                                title={
+                                                                    document.archivo
+                                                                }
+                                                            >
+                                                                {document.archivo
+                                                                    .split("\\")
+                                                                    .pop()}{" "}
+                                                                {/* Extrae solo el nombre del archivo */}
+                                                            </span>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex items-center">
+                                                            <FaEye className="w-5 h-5 text-gray-300 cursor-not-allowed" />
+                                                        </div>
+                                                    )}
+                                                </td>
+
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    {hasPermission(
+                                                        "view.reviews",
+                                                    ) && (
+                                                        <Link
+                                                            href={route(
+                                                                "reviews.show",
+                                                                document.document_id,
+                                                            )}
+                                                            className="flex items-center justify-center p-2 text-xl font-medium text-green-600 hover:text-green-900 hover:bg-green-50 rounded-full"
+                                                        >
+                                                            <ReviewIcon />
+                                                        </Link>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td
+                                                colSpan="9" // Actualizado para incluir la nueva columna
+                                                className="px-6 py-4 text-center text-sm text-gray-500"
+                                            >
+                                                No hay documentos para mostrar
                                             </td>
                                         </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td
-                                            colSpan="7"
-                                            className="px-6 py-4 text-center text-sm text-gray-500"
-                                        >
-                                            No hay documentos para mostrar
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
+                                    )}
+                                </tbody>
+                            </table>
                     </div>
                 </div>
 
