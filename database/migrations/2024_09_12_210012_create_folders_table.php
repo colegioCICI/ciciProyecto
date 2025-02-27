@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('folder_id');
             $table->date('fecha_ingreso');
             $table->string('tramite')->nullable();
+            $table->string('tramite_ca')->nullable();
             $table->string('nombre_propietario');
             $table->bigInteger('ficha');
             $table->string('cedula');

@@ -36,6 +36,9 @@ class FolderController extends Controller
 
             'tramite.required' => 'El numero interno es obligatorio',
             'tramite.string' => 'El numero interno debe ser texto',
+            
+            'tramite_ca.required' => 'El tramite CAE es obligatorio',
+            'tramite_ca.string' => 'El tramite CAE debe ser texto',
 
             'numero_ingreso.required' => 'El número de ingreso es obligatorio',
             'numero_ingreso.integer' => 'El número de ingreso debe ser un número entero',
@@ -89,6 +92,7 @@ class FolderController extends Controller
         $validatedData = $request->validate([
             'fecha_ingreso' => 'required|date',
             'tramite' => 'required|string',
+            'tramite_ca' => 'required|string',
             'tramite_factura' => 'required|integer',
             'nombre_propietario' => 'required|string|max:255',
             'ficha' => 'required|integer|min:1',
@@ -109,6 +113,7 @@ class FolderController extends Controller
         $folder = Folder::create([
             'fecha_ingreso' => $validatedData['fecha_ingreso'],
             'tramite' => $validatedData['tramite'],
+            'tramite_ca' => $validatedData['tramite_ca'],
             'nombre_propietario' => $validatedData['nombre_propietario'],
             'ficha' => $validatedData['ficha'],
             'cedula' => $validatedData['cedula'],
@@ -157,6 +162,9 @@ class FolderController extends Controller
 
             'tramite.required' => 'El numero interno es obligatorio',
             'tramite.string' => 'El numero interno debe ser texto',
+
+            'tramite_ca.required' => 'El tramite CAE es obligatorio',
+            'tramite_ca.string' => 'El tramite CAE debe ser texto',
 
             'numero_ingreso.required' => 'El número de ingreso es obligatorio',
             'numero_ingreso.integer' => 'El número de ingreso debe ser un número entero',
@@ -209,6 +217,7 @@ class FolderController extends Controller
         $validatedData = $request->validate([
             'fecha_ingreso' => 'required|date',
             'tramite' => 'required|string',
+            'tramite_ca' => 'required|string',
             'tramite_factura' => 'required|integer',
             'nombre_propietario' => 'required|string|max:255',
             'ficha' => 'required|integer',
@@ -229,6 +238,7 @@ class FolderController extends Controller
         $folder->update([
             'fecha_ingreso' => $validatedData['fecha_ingreso'],
             'tramite' => $validatedData['tramite'],
+            'tramite_ca' => $validatedData['tramite_ca'],
             'nombre_propietario' => $validatedData['nombre_propietario'],
             'ficha' => $validatedData['ficha'],
             'cedula' => $validatedData['cedula'],

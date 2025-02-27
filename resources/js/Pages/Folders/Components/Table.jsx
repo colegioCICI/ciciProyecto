@@ -22,6 +22,7 @@ export default function Table() {
         user_id: "",
         fecha_ingreso: "",
         tramite: "",
+        tramite_ca: "",
         nombre_propietario: "",
         ficha: "",
         cedula: "",
@@ -152,6 +153,7 @@ export default function Table() {
             nombre_usuario: folder.nombre_usuario,
             fecha_ingreso: folder.fecha_ingreso,
             tramite: folder.tramite || "",
+            tramite_ca: folder.tramite_ca || "",
             nombre_propietario: folder.nombre_propietario,
             ficha: folder.ficha,
             cedula: folder.cedula,
@@ -187,6 +189,7 @@ export default function Table() {
             nombre_usuario: folder.nombre_usuario,
             fecha_ingreso: folder.fecha_ingreso,
             tramite: folder.tramite || "",
+            tramite_ca: folder.tramite_ca || "",
             nombre_propietario: folder.nombre_propietario,
             ficha: folder.ficha,
             cedula: folder.cedula,
@@ -415,6 +418,15 @@ export default function Table() {
         },
 
         {
+            name: "tramite_ca",
+            type: "text",
+            label: "Trámite CA",
+            placeholder: "Ingrese número de trámite CA...",
+            required: false,
+            className: "",
+        },
+
+        {
             name: "nombre_propietario",
             type: "text",
             label: "Nombre del propietario",
@@ -543,6 +555,16 @@ export default function Table() {
             required: false,
             value: data.tramite,
             onChange: (e) => setData({ ...data, tramite: e.target.value }),
+            className: "",
+        },
+        {
+            name: "tramite_ca",
+            type: "text",
+            label: "Trámite CA",
+            placeholder: "Ingrese número de trámite CA...",
+            required: false,
+            value: data.tramite_ca,
+            onChange: (e) => setData({ ...data, tramite_ca: e.target.value }),
             className: "",
         },
         {

@@ -15,6 +15,7 @@ class Folder extends Model implements Auditable
     protected $fillable = [
         'fecha_ingreso',
         'tramite',
+        'tramite_ca',
         'nombre_propietario',
         'ficha',
         'cedula',
@@ -63,6 +64,7 @@ class Folder extends Model implements Auditable
                     "folder_id" => $folder->folder_id,
                     "fecha_ingreso" => $folder->fecha_ingreso,
                     "tramite" => $folder->tramite,
+                    "tramite_ca" => $folder->tramite_ca,
                     "nombre_propietario" => $folder->nombre_propietario,
                     "ficha" => $folder->ficha,
                     "cedula" => $folder->cedula,
