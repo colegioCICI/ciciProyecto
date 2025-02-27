@@ -157,10 +157,9 @@ export default function Table() {
 
     const selectedDocuments = Object.values(selectedRows);
 
-    // Función para manejar la selección y carga inmediata de archivos
     const handleFileChange = (document_id, e) => {
         const file = e.target.files[0];
-
+    
         if (file) {
             // Actualizar el estado de carga para mostrar un indicador
             setUploadingState((prev) => ({
@@ -170,15 +169,15 @@ export default function Table() {
                     fileName: file.name,
                 },
             }));
-
+    
             // Crear un objeto FormData para enviar el archivo
             const formData = new FormData();
             formData.append("file", file);
             formData.append("document_id", document_id);
-
+    
             // Enviar el archivo directamente usando router de Inertia
             router.post(route("documents.uploadFile"), formData, {
-                onSuccess: () => {
+                onSuccess: (page) => {
                     // Actualizar estado cuando la carga es exitosa
                     setUploadingState((prev) => ({
                         ...prev,
@@ -188,7 +187,20 @@ export default function Table() {
                             success: true,
                         },
                     }));
-
+    
+                    // Obtener los datos actualizados de la respuesta de Inertia
+                    const { documents: updatedDocuments, folders: updatedFolders } = page.props;
+                    
+                    // Actualizar los estados con los nuevos datos
+                    if (updatedFolders) {
+                        setFilteredFolders(updatedFolders);
+                    }
+                    
+                    if (updatedDocuments && updatedDocuments.length > 0) {
+                        setDocumentSearch(updatedDocuments);
+                        setFilteredDocuments(updatedDocuments);
+                    }
+    
                     // Limpiar el mensaje de éxito después de 3 segundos
                     setTimeout(() => {
                         setUploadingState((prev) => {
@@ -199,7 +211,8 @@ export default function Table() {
                             return newState;
                         });
                     }, 3000);
-                    window.location.reload(); 
+                    
+                    // Eliminar window.location.reload() para evitar recarga completa
                 },
                 onError: (errors) => {
                     // Actualizar estado cuando hay un error
@@ -216,7 +229,6 @@ export default function Table() {
             });
         }
     };
-
     const getFileUrl = (documentId) => {
         return route("documents.view-file", documentId);
     };

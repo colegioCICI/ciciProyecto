@@ -57,33 +57,46 @@ class DocumentController extends Controller
         ]);
     }
 
+  
     public function uploadFile(Request $request) {
         $request->validate([
             'file' => 'required|file|max:10240', // Máximo 10MB
             'document_id' => 'required|exists:documents,document_id'
         ]);
-        
+    
         $document = Document::findOrFail($request->document_id);
-            
-        // Ruta de almacenamiento en el disco C:
-        $storagePath = 'C:\\DocumentosCICI\\';
         
-        // Guardar el archivo
+        // Obtener el folder_id (suponiendo que la relación está definida en el modelo)
+        $folder_id = $document->folder_id; 
+    $Folder = Folder::findOrFail($folder_id);
+    $tramites = $Folder->tramite; 
+        // Ruta de almacenamiento basada en folder_id
+        $storagePath = "C:\\DocumentosCICI\\{$tramites}";
+    
+        // Verificar si la carpeta existe, si no, crearla
+        if (!file_exists($storagePath)) {
+            mkdir($storagePath, 0777, true);
+        }
+    
+        // Obtener datos del archivo
         $file = $request->file('file');
         $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $extension = $file->getClientOriginalExtension();
-        
+    
         // Configurar la zona horaria de Ecuador
         $timestamp = now()->setTimezone('America/Guayaquil')->format('YmdHis');
-        
-        $fileName = $originalName . '_' . $timestamp . '.' . $extension;
+    
+        // Generar el nuevo nombre del archivo
+        $fileName = "{$originalName}_{$timestamp}.{$extension}";
+    
+        // Mover el archivo a la carpeta del folder_id
         $file->move($storagePath, $fileName);
-        
+    
         // Guardar la ruta en la base de datos
         $document->update([
-            'archivo' => $storagePath . $fileName
+            'archivo' => "{$storagePath}\\{$fileName}"
         ]);
-        
+    
         return redirect()->back()->with('success', 'Archivo subido correctamente');
     }
 

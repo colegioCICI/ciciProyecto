@@ -42,6 +42,8 @@ export default function Table() {
             .then((response) => {
                 closeDeleteModal();
                 Inertia.visit(route("observations.index")); // Utiliza Inertia para actualizar la página
+                window.location.reload(); 
+
             })
             .catch((error) => {
                 console.error(

@@ -231,6 +231,8 @@ export default function Table() {
             .then((response) => {
                 closeDeleteModal();
                 Inertia.visit(route("folders.index")); // Utiliza Inertia para actualizar la página
+                window.location.reload(); 
+
             })
             .catch((error) => {
                 console.error(
@@ -411,7 +413,7 @@ export default function Table() {
         {
             name: "tramite",
             type: "text",
-            label: "Numero tramite...",
+            label: "Numero interno...",
             placeholder: "Ingrese numero de interno...",
             required: false,
             className: "",
@@ -550,7 +552,7 @@ export default function Table() {
         {
             name: "tramite",
             type: "text",
-            label: "Numero tramite...",
+            label: "Numero interno...",
             placeholder: "Ingrese numero de tramite...",
             required: false,
             value: data.tramite,

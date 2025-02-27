@@ -230,6 +230,8 @@ export default function Table() {
                 toast.success("Factura actualizada");
                 closeEditModal(); // Cierra el modal después de editar
                 Inertia.visit(route("facturas.index")); // Utiliza Inertia para actualizar la página
+                window.location.reload(); 
+
             })
             .catch((error) => {
                 // Verificar si el error de validación proviene del servidor

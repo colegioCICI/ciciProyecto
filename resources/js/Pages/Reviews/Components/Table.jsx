@@ -232,6 +232,8 @@ export default function Table() {
             .then((response) => {
                 closeDeleteModal();
                 Inertia.visit(route("reviews.index"));
+                window.location.reload(); 
+
             })
             .catch((error) => {
                 console.error(
@@ -263,6 +265,8 @@ export default function Table() {
                 Inertia.visit(
                     route("reviews.show", { document: data.document_id }),
                 ); // Utiliza Inertia para actualizar la página
+                window.location.reload(); 
+
             })
             .catch((error) => {
                 // Verificar si el error de validación proviene del servidor
@@ -312,6 +316,8 @@ export default function Table() {
                 Inertia.visit(
                     route("reviews.show", { document: data.document_id }),
                 ); // Utiliza Inertia para actualizar la página
+                window.location.reload(); 
+
             })
             .catch((error) => {
                 // Verificar si el error de validación proviene del servidor
