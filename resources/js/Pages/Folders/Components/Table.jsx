@@ -411,7 +411,7 @@ export default function Table() {
         {
             name: "tramite",
             type: "text",
-            label: "Numero interno...",
+            label: "Numero tramite...",
             placeholder: "Ingrese numero de interno...",
             required: false,
             className: "",
@@ -550,7 +550,7 @@ export default function Table() {
         {
             name: "tramite",
             type: "text",
-            label: "Numero interno...",
+            label: "Numero tramite...",
             placeholder: "Ingrese numero de tramite...",
             required: false,
             value: data.tramite,
