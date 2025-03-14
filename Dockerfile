@@ -1,4 +1,4 @@
-FROM php:8.2-fpm  # Cambiamos a PHP 8.2
+FROM php:8.2-fpm
 
 # Instalar dependencias
 RUN apt-get update && apt-get install -y \
@@ -29,9 +29,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Instalar Node.js y npm
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
-
-# Configurar Git para ignorar la propiedad del directorio
-RUN git config --global --add safe.directory /var/www/html
 
 # Copiar el código de la aplicación
 COPY . /var/www/html
