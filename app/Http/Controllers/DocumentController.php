@@ -137,4 +137,16 @@ class DocumentController extends Controller
 
         return Inertia::render('Documents/index');
     }
+
+    public function download($id)
+    {
+        $document = Document::findOrFail($id);
+        $filePath = $document->archivo;  // Ruta del PDF
+
+        if (file_exists($filePath)) {
+            return response()->download($filePath, basename($filePath));
+        }
+
+        return response()->json(['error' => 'Archivo no encontrado'], 404);
+    }
 }

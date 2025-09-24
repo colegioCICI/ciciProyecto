@@ -2,47 +2,30 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Notifications\Notifiable;
 use OwenIt\Auditing\Contracts\Auditable;
 
 class User extends Authenticatable implements Auditable
 {
+    use HasFactory, Notifiable, HasApiTokens, HasRoles;
     use \OwenIt\Auditing\Auditable;
-    use HasRoles;
-    use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -51,7 +34,6 @@ class User extends Authenticatable implements Auditable
         ];
     }
 
-    //Relacion de uno a muchos
     public function folder()
     {
         return $this->hasMany('App\Models\Folder');
@@ -59,21 +41,20 @@ class User extends Authenticatable implements Auditable
 
     public static function getAllUserRoles()
     {
-        $authUserId = Auth::id(); // Obtiene el ID del usuario autenticado
-
-        return self::with("roles")
-            ->where("id", "!=", $authUserId) // Excluye al usuario autenticado
+        $authUserId = \Illuminate\Support\Facades\Auth::id();
+        return self::with('roles')
+            ->where('id', '!=', $authUserId)
             ->get()
             ->map(function ($user) {
                 return [
-                    "id" => $user->id,
-                    "name" => $user->name,
-                    "email" => $user->email, // Agregar el email del usuario
-                    "created_at" => $user->created_at->format('Y-m-d H:i:s'), // Fecha de creación
-                    "roles" => $user->roles->map(function ($role) {
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'created_at' => $user->created_at->format('Y-m-d H:i:s'),
+                    'roles' => $user->roles->map(function ($role) {
                         return [
-                            "role_id" => $role->id,
-                            "role_name" => $role->name,
+                            'role_id' => $role->id,
+                            'role_name' => $role->name,
                         ];
                     }),
                 ];
@@ -82,18 +63,16 @@ class User extends Authenticatable implements Auditable
 
     public static function getPermissionsByRole()
     {
-        return Role::with("permissions")
+        return Role::with('permissions')
             ->get()
             ->map(function ($role) {
                 return [
-                    "role_id" => $role->id,
-                    "role_name" => $role->name,
-                    "permissions" => $role->permissions->map(function (
-                        $permission
-                    ) {
+                    'role_id' => $role->id,
+                    'role_name' => $role->name,
+                    'permissions' => $role->permissions->map(function ($permission) {
                         return [
-                            "permission_id" => $permission->id,
-                            "permission_name" => $permission->name,
+                            'permission_id' => $permission->id,
+                            'permission_name' => $permission->name,
                         ];
                     }),
                 ];
@@ -102,23 +81,22 @@ class User extends Authenticatable implements Auditable
 
     public static function getPermissionAuthUser()
     {
-        $user = Auth::user();
-
+        $user = \Illuminate\Support\Facades\Auth::user();
         if (!$user) {
             return null;
         }
 
         return [
-            "user_id" => $user->id,
-            "user_name" => $user->name,
-            "roles" => $user->roles->map(function ($role) {
+            'user_id' => $user->id,
+            'user_name' => $user->name,
+            'roles' => $user->roles->map(function ($role) {
                 return [
-                    "role_id" => $role->id,
-                    "role_name" => $role->name,
-                    "permissions" => $role->permissions->map(function ($permission) {
+                    'role_id' => $role->id,
+                    'role_name' => $role->name,
+                    'permissions' => $role->permissions->map(function ($permission) {
                         return [
-                            "permission_id" => $permission->id,
-                            "permission_name" => $permission->name,
+                            'permission_id' => $permission->id,
+                            'permission_name' => $permission->name,
                         ];
                     }),
                 ];
