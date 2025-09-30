@@ -12,7 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // AÑADIDO: Confiar en el proxy de Nginx
+        $middleware->alias([
+            'api.token' => App\Http\Middleware\ApiTokenMiddleware::class,
+        ]);
+        
         $middleware->trustProxies(at: '*');
         
         $middleware->web(append: [

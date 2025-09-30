@@ -34,5 +34,8 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'api_tokens' => [
+        'microservice_token' => env('MICROSERVICE_API_TOKEN'),
+    ],
 
 ];
