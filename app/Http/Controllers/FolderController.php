@@ -201,7 +201,6 @@ class FolderController extends Controller
             'numero_ingreso.min' => 'El número de ingreso debe ser mayor o igual a 1',
 
             'fecha_ingreso.required' => 'La fecha de ingreso es obligatoria',
-            'fecha_ingreso.date' => 'La fecha de ingreso debe ser una fecha válida',
 
             'tramite_factura.required' => 'El número de trámite es obligatorio',
             'tramite_factura.integer' => 'Ingrese correctamente el número de trámite',
