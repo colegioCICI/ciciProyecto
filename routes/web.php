@@ -34,6 +34,14 @@ Route::get('/', function () {
 //     return Inertia::render('Dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'OK',
+        'service' => config('app.name'),
+        'timestamp' => now()->toISOString()
+    ]);
+});
+
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');

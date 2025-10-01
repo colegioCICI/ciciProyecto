@@ -6,6 +6,7 @@ export default function Authenticated({
     header,
     usuariosRoles,
     children,
+    SESSION_LIFETIME = 120,
 }) {
     return (
         <div className="min-h-screen min-w-max bg-green-100 flex flex-col">

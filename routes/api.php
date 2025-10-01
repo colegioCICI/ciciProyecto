@@ -19,3 +19,21 @@ Route::middleware(['api.token'])->group(function () {
     Route::get('/documentos/tramiteCICI/{tramite}', [TramiteRequerimientosController::class, 'getDocumentosPorTramite']);
     Route::get('/emailsCICI/{tramite}', [TramiteRequerimientosController::class, 'getEmailsPorTramite']);
 });
+
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'healthy',
+        'timestamp' => now(),
+        'service' => config('app.name'),
+        'environment' => config('app.env')
+    ]);
+});
+
+Route::get('/api/health', function () {
+    return response()->json([
+        'status' => 'healthy',
+        'timestamp' => now(),
+        'service' => config('app.name'),
+        'environment' => config('app.env')
+    ]);
+});
