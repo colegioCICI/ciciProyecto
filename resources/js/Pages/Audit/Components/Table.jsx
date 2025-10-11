@@ -5,7 +5,7 @@ import SearchInput from "@/Components/SearchInput";
 import ExportData from "@/Components/ExportData";
 
 export default function Table() {
-    const { audits, usuariosRoles, logoCICI, success, users } = usePage().props; // Obtener los datos de la página de Inertia
+    const { audits, usuariosRoles, logoCICI, success, users } = usePage().props;
     const theadersexsportar = ["Usuario", "Acción", "Dirección IP", "Valores Antiguos", "Valores Actuales", "Fecha"];
     const columnasexportar = ["user_id", "event_es", "ip_address", "valores_antiguos", "valores_nuevos", "created_at_formatted"];
 
@@ -18,9 +18,10 @@ export default function Table() {
         );
     };
 
-    const [filteredAudits, setFilteredAudit] = useState(audits);
+    // ✅ CORREGIDO: Usar audits.data como array base
+    const [filteredAudits, setFilteredAudit] = useState(audits.data || []);
 
-    // Pagination logic
+    // ✅ CORREGIDO: Pagination logic usando filteredAudits (que ahora es array)
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredAudits.slice(
@@ -47,17 +48,12 @@ export default function Table() {
     const [selectedRows, setSelectedRows] = useState({});
     const handleCheckboxChange = (audit) => {
         setSelectedRows((prev) => {
-            // Copiamos el estado previo
             const updatedRows = { ...prev };
-
-            // Si el documento ya está seleccionado, lo quitamos
             if (updatedRows[audit.id]) {
                 delete updatedRows[audit.id];
             } else {
-                // Si no está seleccionado, lo agregamos usando su folder_id como clave
                 updatedRows[audit.id] = audit;
             }
-
             return updatedRows;
         });
     };
@@ -68,8 +64,6 @@ export default function Table() {
 
     const handleHeaderCheckboxChange = () => {
         const newSelectedRows = {};
-        console.log(...audits);
-        
         if (!areAllSelected) {
             currentItems.forEach((item) => {
                 newSelectedRows[item.id] = item;
@@ -91,11 +85,21 @@ export default function Table() {
         }
         return JSON.stringify(values);
     };
+
     const eventTranslations = {
         created: "Creado",
         updated: "Actualizado",
         deleted: "Eliminado",
-        // Agrega más eventos según los que uses
+    };
+
+    // ✅ Función para obtener nombre de usuario (si existe la relación)
+    const getUserName = (audit) => {
+        // Si audit tiene relación user cargada
+        if (audit.user && audit.user.name) {
+            return audit.user.name;
+        }
+        // Si no, mostrar el ID
+        return `Usuario #${audit.user_id}`;
     };
 
     return (
@@ -138,9 +142,7 @@ export default function Table() {
                                             <input
                                                 type="checkbox"
                                                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4"
-                                                onChange={
-                                                    handleHeaderCheckboxChange
-                                                }
+                                                onChange={handleHeaderCheckboxChange}
                                                 checked={areAllSelected}
                                             />
                                         </th>
@@ -182,55 +184,40 @@ export default function Table() {
                                                     <input
                                                         type="checkbox"
                                                         className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4"
-                                                        checked={
-                                                            !!selectedRows[
-                                                                audit.id
-                                                            ]
-                                                        }
-                                                        onChange={() =>
-                                                            handleCheckboxChange(
-                                                                audit,
-                                                            )
-                                                        }
+                                                        checked={!!selectedRows[audit.id]}
+                                                        onChange={() => handleCheckboxChange(audit)}
                                                     />
                                                 </td>
                                             )}
                                             <td className="px-6 py-4 whitespace-nowrap max-w-36 overflow-hidden text-ellipsis">
                                                 <div className="text-sm text-gray-900 truncate">
-                                                    {audit.user_id}
+                                                    {/* ✅ Usar función para obtener nombre */}
+                                                    {getUserName(audit)}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap max-w-36 overflow-hidden text-ellipsis hidden md:table-cell">
                                                 <div className="text-sm text-gray-900 truncate">
-                                                    {eventTranslations[
-                                                        audit.event
-                                                    ] || audit.event}
+                                                    {eventTranslations[audit.event] || audit.event}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap max-w-36 overflow-hidden text-ellipsis hidden md:table-cell">
                                                 <div className="text-sm text-gray-900 truncate">
-                                                    {audit.ip_address}
+                                                    {audit.ip_address || 'N/A'}
                                                 </div>
                                             </td>
                                             <td className="text-sm text-gray-900 px-6 py-4 max-w-36 hidden lg:table-cell">
-                                                <div className="text-sm text-gray-900 break-words">
-                                                    {formatValues(
-                                                        audit.old_values,
-                                                    )}
+                                                <div className="text-sm text-gray-900 break-words max-h-20 overflow-y-auto">
+                                                    {formatValues(audit.old_values)}
                                                 </div>
                                             </td>
                                             <td className="text-sm text-gray-900 px-6 py-4 max-w-36 hidden lg:table-cell">
-                                                <div className="text-sm text-gray-900 break-words">
-                                                    {formatValues(
-                                                        audit.new_values,
-                                                    )}
+                                                <div className="text-sm text-gray-900 break-words max-h-20 overflow-y-auto">
+                                                    {formatValues(audit.new_values)}
                                                 </div>
                                             </td>
                                             <td className="text-sm text-gray-900 px-6 py-4 whitespace-nowrap">
                                                 <div className="text-sm text-gray-900 truncate">
-                                                    {new Date(
-                                                        audit.created_at,
-                                                    ).toLocaleDateString()}
+                                                    {new Date(audit.created_at).toLocaleDateString()}
                                                 </div>
                                             </td>
                                         </tr>
@@ -241,7 +228,7 @@ export default function Table() {
                                             colSpan="9"
                                             className="px-6 py-4 text-center text-sm text-gray-500"
                                         >
-                                            No hay carpetas para mostrar
+                                            No hay registros de auditoría para mostrar
                                         </td>
                                     </tr>
                                 )}
@@ -250,7 +237,7 @@ export default function Table() {
                     </div>
                 </div>
 
-                {/* Pagination */}
+                {/* ✅ Pagination mejorada */}
                 <div className="mt-6 flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 px-4">
                     <button
                         onClick={prevPage}
@@ -259,11 +246,18 @@ export default function Table() {
                     >
                         Atrás
                     </button>
-                    <p className="text-sm text-gray-700">
-                        Página{" "}
-                        <span className="font-medium">{currentPage}</span> de{" "}
-                        <span className="font-medium">{totalPages}</span>
-                    </p>
+                    
+                    <div className="flex items-center space-x-2">
+                        <p className="text-sm text-gray-700">
+                            Página <span className="font-medium">{currentPage}</span> de <span className="font-medium">{totalPages}</span>
+                        </p>
+                        {audits.total && (
+                            <p className="text-sm text-gray-500">
+                                (Total: {audits.total} registros)
+                            </p>
+                        )}
+                    </div>
+                    
                     <button
                         onClick={nextPage}
                         disabled={currentPage === totalPages}
