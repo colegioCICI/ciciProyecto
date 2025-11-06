@@ -300,6 +300,7 @@ return [
 
         //RabbitMQ Service Provider
         App\Providers\RabbitMQServiceProvider::class,
+        App\Providers\StorageServiceProvider::class,
 
     ],
 

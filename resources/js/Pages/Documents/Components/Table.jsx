@@ -466,31 +466,18 @@ export default function Table() {
                                                         )}
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <td className="px-6 py-4 whitespace-nowrap">
                                                     {document.archivo ? (
                                                         <div className="flex items-center space-x-2">
                                                             <button
-                                                                onClick={() =>
-                                                                    (window.location.href =
-                                                                        getFileUrl(
-                                                                            document.document_id,
-                                                                        ))
-                                                                }
+                                                                onClick={() => window.location.href = getFileUrl(document.document_id)}
                                                                 className="text-blue-600 hover:text-blue-800"
                                                                 title="Descargar archivo"
                                                             >
                                                                 <FaEye className="w-5 h-5" />
                                                             </button>
-                                                            <span
-                                                                className="text-sm truncate max-w-[60px]"
-                                                                title={
-                                                                    document.archivo
-                                                                }
-                                                            >
-                                                                {document.archivo
-                                                                    .split("\\")
-                                                                    .pop()}{" "}
-                                                                {/* Extrae solo el nombre del archivo */}
+                                                            <span className="text-sm truncate max-w-[60px]" title={document.archivo}>
+                                                                {document.archivo.split(/[/\\]/).pop()}
                                                             </span>
                                                         </div>
                                                     ) : (
