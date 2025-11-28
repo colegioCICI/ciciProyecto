@@ -358,4 +358,18 @@ class FolderController extends Controller
         }
         return response()->json($folder);
     }
+
+    public function showByTramite($tramite)
+    {
+        $folder = Folder::with(['documents', 'user', 'facturas'])
+            ->where('tramite', $tramite)
+            ->first();
+        
+        if (!$folder) {
+            return response()->json(['error' => 'Carpeta no encontrada'], 404);
+        }
+        
+        return response()->json($folder);
+    }
+
 }

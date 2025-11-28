@@ -15,6 +15,7 @@ Route::get('/api/hello', function () {
 Route::get('/documents/{id}/download', [DocumentController::class, 'download']);
 Route::middleware(['api.token'])->group(function () {
     Route::get('/folders/{folder_id}', [FolderController::class, 'show']);
+    Route::get('/folders/by-tramite/{tramite}', [FolderController::class, 'showByTramite']);
     Route::get('/documentos/tramiteCICI/{tramite}', [TramiteRequerimientosController::class, 'getDocumentosPorTramite']);
     Route::get('/emailsCICI/{tramite}', [TramiteRequerimientosController::class, 'getEmailsPorTramite']);
 });
