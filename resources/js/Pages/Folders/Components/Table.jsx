@@ -259,7 +259,6 @@ export default function Table() {
                 formData.append(`documents[${index}]`, document);
             });
         } else {
-            console.log("DATOS VACIOS");
         }
 
         axios
@@ -307,7 +306,6 @@ export default function Table() {
                 formData.append(`documents[${index}]`, document);
             });
         } else {
-            console.log("DATOS VACIOS");
         }
         axios
             .patch(route("folders.update", folderIdToEdit), formData, {

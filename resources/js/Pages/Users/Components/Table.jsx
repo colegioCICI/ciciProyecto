@@ -208,7 +208,6 @@ export default function Table() {
 
         const formData = new FormData(e.target);
         formData.append("role", data.role_id);
-        console.log(data.role_id);
 
         const newForm = Object.fromEntries(formData);
 
@@ -468,7 +467,7 @@ export default function Table() {
                                                         className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4"
                                                         checked={
                                                             !!selectedRows[
-                                                                user.id
+                                                            user.id
                                                             ]
                                                         }
                                                         onChange={() =>
@@ -499,7 +498,7 @@ export default function Table() {
                                             <td className="hidden px-6 py-4 whitespace-nowrap lg:table-cell">
                                                 <span className="inline-flex text-sm text-gray-900">
                                                     {user.roles &&
-                                                    user.roles.length > 0
+                                                        user.roles.length > 0
                                                         ? user.roles[0]
                                                             .role_name
                                                         : "Sin rol"}
@@ -510,48 +509,48 @@ export default function Table() {
                                                     {hasPermission(
                                                         "view.users",
                                                     ) && (
-                                                        <button
-                                                            onClick={() =>
-                                                                openViewModal(
-                                                                    user,
-                                                                )
-                                                            }
-                                                            className="text-green-600 hover:text-green-900 p-1 rounded-full hover:bg-green-50"
-                                                            aria-label="Ver"
-                                                        >
-                                                            <View className="h-5 w-5" />
-                                                        </button>
-                                                    )}
+                                                            <button
+                                                                onClick={() =>
+                                                                    openViewModal(
+                                                                        user,
+                                                                    )
+                                                                }
+                                                                className="text-green-600 hover:text-green-900 p-1 rounded-full hover:bg-green-50"
+                                                                aria-label="Ver"
+                                                            >
+                                                                <View className="h-5 w-5" />
+                                                            </button>
+                                                        )}
                                                     {hasPermission(
                                                         "edit.users",
                                                     ) && (
-                                                        <button
-                                                            onClick={() =>
-                                                                openEditModal(
-                                                                    user,
-                                                                )
-                                                            }
-                                                            className="text-blue-600 hover:text-blue-900 p-1 rounded-full hover:bg-blue-50"
-                                                            aria-label="Editar"
-                                                        >
-                                                            <EditIcon className="h-5 w-5" />
-                                                        </button>
-                                                    )}
+                                                            <button
+                                                                onClick={() =>
+                                                                    openEditModal(
+                                                                        user,
+                                                                    )
+                                                                }
+                                                                className="text-blue-600 hover:text-blue-900 p-1 rounded-full hover:bg-blue-50"
+                                                                aria-label="Editar"
+                                                            >
+                                                                <EditIcon className="h-5 w-5" />
+                                                            </button>
+                                                        )}
                                                     {hasPermission(
                                                         "delete.users",
                                                     ) && (
-                                                        <button
-                                                            onClick={() =>
-                                                                openDeleteModal(
-                                                                    user.id,
-                                                                )
-                                                            }
-                                                            className="text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-50"
-                                                            aria-label="Eliminar"
-                                                        >
-                                                            <DeleteIcon className="h-5 w-5" />
-                                                        </button>
-                                                    )}
+                                                            <button
+                                                                onClick={() =>
+                                                                    openDeleteModal(
+                                                                        user.id,
+                                                                    )
+                                                                }
+                                                                className="text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-50"
+                                                                aria-label="Eliminar"
+                                                            >
+                                                                <DeleteIcon className="h-5 w-5" />
+                                                            </button>
+                                                        )}
                                                 </div>
                                             </td>
                                         </tr>

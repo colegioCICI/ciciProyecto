@@ -21,7 +21,7 @@ export default function Authenticated({
                     <div className="h-full bg-white shadow-xl border-r border-green-100">
                         {/* Accent bar superior */}
                         <div className="h-1 bg-gradient-to-r from-green-400 via-green-500 to-emerald-500"></div>
-                        
+
                         <div className="overflow-y-auto h-full pb-6">
                             <Sidebar usuariosRoles={usuariosRoles} />
                         </div>
@@ -35,7 +35,7 @@ export default function Authenticated({
                             <div className="bg-white shadow-lg rounded-xl border border-green-100 overflow-hidden">
                                 {/* Accent bar */}
                                 <div className="h-1 bg-gradient-to-r from-green-400 via-green-500 to-emerald-500"></div>
-                                
+
                                 <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                                     <div className="flex items-center">
                                         {/* Icono decorativo */}
@@ -44,7 +44,7 @@ export default function Authenticated({
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                             </svg>
                                         </div>
-                                        
+
                                         <div className="flex-1">
                                             {header}
                                         </div>
@@ -59,7 +59,7 @@ export default function Authenticated({
                         <div className="bg-white shadow-xl rounded-xl border border-green-100 overflow-hidden">
                             {/* Accent bar */}
                             <div className="h-1 bg-gradient-to-r from-green-400 via-green-500 to-emerald-500"></div>
-                            
+
                             {/* Contenido */}
                             <div className="p-6 overflow-x-auto">
                                 {children}
@@ -81,7 +81,8 @@ export default function Authenticated({
                 </div>
             </div>
 
-            <style jsx>{`
+            <style dangerouslySetInnerHTML={{
+                __html: `
                 /* Scroll personalizado para el sidebar */
                 aside::-webkit-scrollbar {
                     width: 6px;
@@ -96,7 +97,7 @@ export default function Authenticated({
                 aside::-webkit-scrollbar-thumb:hover {
                     background: #16a34a;
                 }
-            `}</style>
+            ` }} />
         </div>
     );
 }

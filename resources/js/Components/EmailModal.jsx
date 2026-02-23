@@ -81,14 +81,13 @@ const EmailModal = ({ showCreateEmail, closeModalCreateEmail, folders }) => {
                 reset();
                 // Redireccionar a la ruta notifications.index usando Inertia
                 Inertia.visit(route("notifications.index")); // Redirigir a notifications.index
-                window.location.reload(); 
+                window.location.reload();
 
             },
             onError: (errors) => {
                 console.error("Errores de validación:", errors);
             },
             onFinish: () => {
-                console.log("La solicitud ha finalizado");
             },
         });
     };
