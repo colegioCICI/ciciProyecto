@@ -281,6 +281,9 @@ export default function Table() {
                             toast.error(message); // Mostrar cada mensaje en un toast individual
                         });
                     });
+                } else if (error.response && error.response.status === 419) {
+                    toast.error("Sesión expirada. Recargando la página para actualizar su sesión...");
+                    setTimeout(() => window.location.reload(), 2000);
                 } else if (error.response && error.response.data && error.response.data.message) {
                     // Mostrar el mensaje específico del error del servidor
                     toast.error(`Error del servidor: ${error.response.data.message}`);
@@ -335,6 +338,9 @@ export default function Table() {
                             toast.error(message); // Mostrar cada mensaje en un toast individual
                         });
                     });
+                } else if (error.response && error.response.status === 419) {
+                    toast.error("Sesión expirada. Recargando la página para actualizar su sesión...");
+                    setTimeout(() => window.location.reload(), 2000);
                 } else if (error.response && error.response.data && error.response.data.message) {
                     // Mostrar el mensaje específico del error del servidor
                     toast.error(`Error del servidor: ${error.response.data.message}`);
