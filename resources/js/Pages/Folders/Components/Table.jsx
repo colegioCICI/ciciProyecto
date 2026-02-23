@@ -374,25 +374,10 @@ export default function Table() {
         if (!selectedFolderId) {
             setFilteredFolders(folders);
         } else {
-            const selectedFolder = folders.find(
+            const filtered = folders.filter(
                 (folder) => folder.folder_id === selectedFolderId,
             );
-
-            if (selectedFolder) {
-                const lowercasedTramite = selectedFolder.tramite
-                    ? selectedFolder.tramite.toLowerCase()
-                    : ""; // Controlar si tramite es null
-
-                const filtered = folders.filter(
-                    (folder) =>
-                        folder.tramite &&
-                        folder.tramite.toLowerCase() === lowercasedTramite,
-                );
-
-                setFilteredFolders(filtered);
-            } else {
-                setFilteredFolders(folders);
-            }
+            setFilteredFolders(filtered.length > 0 ? filtered : folders);
         }
     };
 
@@ -769,7 +754,7 @@ export default function Table() {
                     <div className="w-full sm:w-1/2">
                         <SearchInput
                             options={folders.map((folder) => ({
-                                label: folder.tramite || "Trámite no definido",
+                                label: String(folder.folder_id),
                                 value: folder.folder_id,
                             }))}
                             labelKey="label"
@@ -777,7 +762,7 @@ export default function Table() {
                             onSelect={(selectedValue) =>
                                 handleSearch(selectedValue)
                             }
-                            placeholder="Buscar por trámite"
+                            placeholder="Buscar por ID de carpeta"
                             className="w-full"
                         />
                     </div>

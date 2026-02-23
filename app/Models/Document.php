@@ -9,7 +9,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 class Document extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
-    
+
     use HasFactory;
 
     protected $primaryKey = 'document_id';
@@ -29,16 +29,17 @@ class Document extends Model implements Auditable
     //Relacion de uno a muchos
     public function reviews()
     {
-        return $this->hasMany('App\Models\Review','document_id');
+        return $this->hasMany('App\Models\Review', 'document_id');
     }
 
     public static function getDocumentsWithFoldersWithReviews()
     {
         return self::with(['folder', 'reviews'])  // Carga las relaciones 'folder' y 'review'
+            ->orderBy('document_id', 'desc')
             ->get()
             ->map(function ($document) {
                 return [
-                    "document_id" => $document->document_id, 
+                    "document_id" => $document->document_id,
                     "tipo_documento" => $document->tipo_documento,
                     "fecha_subida" => $document->fecha_subida,
                     "folder_id" => $document->folder_id,
