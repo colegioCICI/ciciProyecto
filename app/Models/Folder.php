@@ -9,7 +9,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 class Folder extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
-    
+
     use HasFactory;
     protected $primaryKey = 'folder_id';
     protected $fillable = [
@@ -55,6 +55,7 @@ class Folder extends Model implements Auditable
     public static function getDocumentsWithFolders()
     {
         return self::with(['user', 'documents', 'facturas'])  // Carga las relaciones 'user' y 'documents'
+            ->orderBy('folder_id', 'desc')
             ->get()
             ->map(function ($folder) {
                 // Obtenemos la primera factura si está disponible

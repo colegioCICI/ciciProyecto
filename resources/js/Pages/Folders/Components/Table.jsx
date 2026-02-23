@@ -178,7 +178,7 @@ export default function Table() {
     const closeViewModal = () => {
         setSelectedTipoEstado("");
         setShowView(false);
-        
+
     };
     const openEditModal = (folder) => {
         setFolderIdToEdit(folder.folder_id);
@@ -231,7 +231,7 @@ export default function Table() {
             .then((response) => {
                 closeDeleteModal();
                 Inertia.visit(route("folders.index")); // Utiliza Inertia para actualizar la página
-                window.location.reload(); 
+                window.location.reload();
 
             })
             .catch((error) => {
@@ -268,7 +268,7 @@ export default function Table() {
                 toast.success("Carpeta creada");
                 closeModal();
                 Inertia.visit(route("folders.index"));
-                window.location.reload(); 
+                window.location.reload();
 
             })
             .catch((error) => {
@@ -320,7 +320,7 @@ export default function Table() {
                 toast.success("Actualización completada");
                 closeEditModal();
                 Inertia.visit(route("folders.index"));
-                window.location.reload(); 
+                window.location.reload();
 
             })
             .catch((error) => {
@@ -813,12 +813,12 @@ export default function Table() {
                                             />
                                         </th>
                                     )}
-                                    
+
                                     <th
                                         scope="col"
                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                     >
-                                        Trámite
+                                        ID carpeta
                                     </th>
                                     <th
                                         scope="col"
@@ -868,7 +868,7 @@ export default function Table() {
                                                         className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4"
                                                         checked={
                                                             !!selectedRows[
-                                                                folder.folder_id
+                                                            folder.folder_id
                                                             ]
                                                         }
                                                         onChange={() =>
@@ -879,14 +879,14 @@ export default function Table() {
                                                     />
                                                 </td>
                                             )}
-                                            
+
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="text-sm text-gray-900">
-                                                    {folder.tramite}
+                                                    {folder.folder_id}
                                                 </div>
                                             </td>
                                             <td className="hidden px-6 py-4 whitespace-nowrap sm:table-cell">
-                                                <div className="text-sm text-gray-900">
+                                                <div className="text-sm text-gray-900 truncate max-w-[150px]">
                                                     {folder.nombre_propietario}
                                                 </div>
                                             </td>
@@ -910,48 +910,48 @@ export default function Table() {
                                                     {hasPermission(
                                                         "view.folders",
                                                     ) && (
-                                                        <button
-                                                            onClick={() =>
-                                                                openViewModal(
-                                                                    folder,
-                                                                )
-                                                            }
-                                                            className="text-green-600 hover:text-green-900 p-1 rounded-full hover:bg-green-50"
-                                                            aria-label="Ver"
-                                                        >
-                                                            <View className="h-5 w-5" />
-                                                        </button>
-                                                    )}
+                                                            <button
+                                                                onClick={() =>
+                                                                    openViewModal(
+                                                                        folder,
+                                                                    )
+                                                                }
+                                                                className="text-green-600 hover:text-green-900 p-1 rounded-full hover:bg-green-50"
+                                                                aria-label="Ver"
+                                                            >
+                                                                <View className="h-5 w-5" />
+                                                            </button>
+                                                        )}
                                                     {hasPermission(
                                                         "edit.folders",
                                                     ) && (
-                                                        <button
-                                                            onClick={() =>
-                                                                openEditModal(
-                                                                    folder,
-                                                                )
-                                                            }
-                                                            className="text-blue-600 hover:text-blue-900 p-1 rounded-full hover:bg-blue-50"
-                                                            aria-label="Editar"
-                                                        >
-                                                            <EditIcon className="h-5 w-5" />
-                                                        </button>
-                                                    )}
+                                                            <button
+                                                                onClick={() =>
+                                                                    openEditModal(
+                                                                        folder,
+                                                                    )
+                                                                }
+                                                                className="text-blue-600 hover:text-blue-900 p-1 rounded-full hover:bg-blue-50"
+                                                                aria-label="Editar"
+                                                            >
+                                                                <EditIcon className="h-5 w-5" />
+                                                            </button>
+                                                        )}
                                                     {hasPermission(
                                                         "delete.folders",
                                                     ) && (
-                                                        <button
-                                                            onClick={() =>
-                                                                openDeleteModal(
-                                                                    folder.folder_id,
-                                                                )
-                                                            }
-                                                            className="text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-50"
-                                                            aria-label="Eliminar"
-                                                        >
-                                                            <DeleteIcon className="h-5 w-5" />
-                                                        </button>
-                                                    )}
+                                                            <button
+                                                                onClick={() =>
+                                                                    openDeleteModal(
+                                                                        folder.folder_id,
+                                                                    )
+                                                                }
+                                                                className="text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-50"
+                                                                aria-label="Eliminar"
+                                                            >
+                                                                <DeleteIcon className="h-5 w-5" />
+                                                            </button>
+                                                        )}
                                                 </div>
                                             </td>
                                         </tr>
