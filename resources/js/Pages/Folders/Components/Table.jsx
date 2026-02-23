@@ -281,10 +281,13 @@ export default function Table() {
                             toast.error(message); // Mostrar cada mensaje en un toast individual
                         });
                     });
+                } else if (error.response && error.response.data && error.response.data.message) {
+                    // Mostrar el mensaje específico del error del servidor
+                    toast.error(`Error del servidor: ${error.response.data.message}`);
                 } else {
-                    // Mensaje genérico si no es un error de validación
+                    // Mensaje genérico si no es un error de validación ni hay mensaje específico
                     toast.error(
-                        "Error al crear la carpeta. Revise los datos ingresados.",
+                        "Error al crear la carpeta. Revise los datos y vuelva a intentarlo.",
                     );
                 }
             })
@@ -332,10 +335,13 @@ export default function Table() {
                             toast.error(message); // Mostrar cada mensaje en un toast individual
                         });
                     });
+                } else if (error.response && error.response.data && error.response.data.message) {
+                    // Mostrar el mensaje específico del error del servidor
+                    toast.error(`Error del servidor: ${error.response.data.message}`);
                 } else {
-                    // Mensaje genérico si no es un error de validación
+                    // Mensaje genérico si no es un error de validación ni hay mensaje específico
                     toast.error(
-                        "Error al actualizar la carpeta. Revise los datos ingresados.",
+                        "Error al actualizar la carpeta. Revise los datos y vuelva a intentarlo.",
                     );
                 }
             })
