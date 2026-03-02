@@ -382,12 +382,12 @@ export default function Table() {
         }
     };
 
-    const handleSearch = (selectedFolderId) => {
-        if (!selectedFolderId) {
+    const handleSearch = (selectedTramite) => {
+        if (!selectedTramite) {
             setFilteredFolders(folders);
         } else {
             const filtered = folders.filter(
-                (folder) => folder.folder_id === selectedFolderId,
+                (folder) => folder.tramite === selectedTramite,
             );
             setFilteredFolders(filtered.length > 0 ? filtered : folders);
         }
@@ -766,15 +766,15 @@ export default function Table() {
                     <div className="w-full sm:w-1/2">
                         <SearchInput
                             options={folders.map((folder) => ({
-                                label: String(folder.folder_id),
-                                value: folder.folder_id,
+                                label: String(folder.tramite || ""),
+                                value: folder.tramite,
                             }))}
                             labelKey="label"
                             valueKey="value"
                             onSelect={(selectedValue) =>
                                 handleSearch(selectedValue)
                             }
-                            placeholder="Buscar por ID de carpeta"
+                            placeholder="Buscar por Número Interno"
                             className="w-full"
                         />
                     </div>
@@ -813,7 +813,7 @@ export default function Table() {
                                         scope="col"
                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                     >
-                                        ID carpeta
+                                        Número Interno
                                     </th>
                                     <th
                                         scope="col"
@@ -877,7 +877,7 @@ export default function Table() {
 
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="text-sm text-gray-900">
-                                                    {folder.folder_id}
+                                                    {folder.tramite}
                                                 </div>
                                             </td>
                                             <td className="hidden px-6 py-4 whitespace-nowrap sm:table-cell">
